@@ -46,8 +46,11 @@ const Products = () => {
                     </Link>
                     <p className="mt-1">$19</p>
 
-                    <button onClick={() => handleAdd(category)} className="inline-flex items-center bg-indigo-500 text-white border-0 py-1 px-3 focus:outline-none hover:bg-indigo-700 rounded text-base mt-4 md:mt-5">Add To Cart</button>
-                  </div>
+                    
+                    <button onClick={() => handleAdd(category)} className="inline-flex items-center bg-indigo-500 text-white border-0 py-1 px-3 focus:outline-none hover:bg-indigo-700 rounded text-base mt-4 md:mt-5">
+                    {isProductInCart(idCategory) ? 'In Cart' : 'Add To Cart'}
+                  </button>                  
+                    </div>
                 </div>
               );
             })}
