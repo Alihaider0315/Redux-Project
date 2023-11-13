@@ -9,23 +9,34 @@ import { STATUSES } from '../../../store/productSlice.js';
 
 const Products = () => {
   const dispatch = useDispatch();
-  const {data: products , status} = useSelector((state)=>state.product);
+  const { data: products, status } = useSelector((state) => state.product);
+  const cart = useSelector((state) => state.cart);
 
   useEffect(() => {
     dispatch(fetchProducts());
-
   }, []);
 
-  const handleAdd = (category) => {
-    dispatch(add(category));
-    toast.success(`${category.strCategory} added to cart`, {
-      position: "bottom-right",
-    });
-  }
-  if (status === STATUSES.LOADING) {
+  const isProductInCart = (productId) => cart.some(item => item.idCategory === productId);
 
+  const handleAdd = (category) => {
+    const { idCategory, strCategory } = category;
+
+    if (isProductInCart(idCategory)) {
+      toast.warn(`${strCategory} is already in the cart`, {
+        position: "bottom-right",
+      });
+    } else {
+      dispatch(add(category));
+      toast.success(`${strCategory} added to cart`, {
+        position: "bottom-right",
+      });
+    }
+  };
+
+  if (status === STATUSES.LOADING) {
     return <h2>Loading...</h2>;
   }
+
   return (
     <div>
       <h4 className='text-center text-lg'>Our Products</h4>
@@ -46,10 +57,10 @@ const Products = () => {
                     </Link>
                     <p className="mt-1">$19</p>
 
-                    
-                    <button onClick={() => handleAdd(category)} className="inline-flex items-center bg-indigo-500 text-white border-0 py-1 px-3 focus:outline-none hover:bg-indigo-700 rounded text-base mt-4 md:mt-5">Add To Cart</button>
-                  
-                    </div>
+                    <button onClick={() => handleAdd(category)} className="inline-flex items-center bg-indigo-500 text-white border-0 py-1 px-3 focus:outline-none hover:bg-indigo-700 rounded text-base mt-4 md:mt-5">
+                      {isProductInCart(idCategory) ? 'In Cart' : 'Add To Cart'}
+                    </button>
+                  </div>
                 </div>
               );
             })}
